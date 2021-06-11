@@ -20,7 +20,8 @@ module WS2812_module #(
 );
 
 reg [5:0]  apb_paddr_r;
-reg [31:0] apb_pwdata_r;
+reg [31:0] status_register;
+reg [31:0] control_register;
 
 // State machine to control APB bus
 reg [2:0] SM_APB;
@@ -35,6 +36,8 @@ always @(posedge clk_i or negedge resetn_i) begin
 		apb_prdata_o <= 32'b0;
 		apb_pready_o <= 1'b0;
 		apb_pslverr_o <= 1'b0;
+		status_register <= 32'hADD00000;
+		control_register <= 32'hADD00004;
 		
 	end
 	else begin
@@ -45,15 +48,17 @@ always @(posedge clk_i or negedge resetn_i) begin
 					apb_pready_o <= 1'b1;
 
 					if (apb_pwrite_i) begin
-						apb_paddr_r <= apb_paddr_i;
-						apb_pwdata_r <= apb_pwdata_i;
+						if (apb_paddr_i == 6'h0)
+							status_register <= apb_pwdata_i;
+						else
+							control_register <= apb_pwdata_i;						
 					end
 					else begin
-						// address 0 return write address, address 4 return write data
+						// 0 = status register, 4 = control register
 						if (apb_paddr_i == 6'h0)
-							apb_prdata_o <= 32'hADD00000;
+							apb_prdata_o <= status_register;
 						else
-							apb_prdata_o <= apb_pwdata_r;
+							apb_prdata_o <= control_register;
 					end			
 
 				end
