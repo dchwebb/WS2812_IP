@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<ippackgerproject version="1.0">
+    <filegroups>
+        <filegroup filetype="metadata">
+            <file path="metadata.xml"/>
+        </filegroup>
+        <filegroup filetype="sub_metadata">
+            <file path="bus_interface.xml"/>
+            <file path="address_space.xml"/>
+            <file path="memory_map.xml"/>
+        </filegroup>
+        <filegroup filetype="rtl">
+            <file encryption="0" path="rtl/WS2812_IP.v" lib="" type=""/>
+        </filegroup>
+        <filegroup filetype="doc">
+            <file path="doc/introduction.html"/>
+        </filegroup>
+        <filegroup filetype="plugin">
+            <file path="C:/Users/Dominic/PropelIPLocal/latticesemi.com_ip_gpio_1.4.0/plugin/plugin.py"/>
+        </filegroup>
+        <filegroup filetype="key">
+            <file path="C:/lscc/propel/2.0/builder/rtf/ispfpga/data/key.txt"/>
+        </filegroup>
+        <filegroup filetype="eula">
+            <file path="doc/EULA.txt"/>
+        </filegroup>
+    </filegroups>
+</ippackgerproject>

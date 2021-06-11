@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<lscc:hdlparseresult version="1.0">
+    <modules>
+        <module name="WS2812_module">
+            <ports>
+                <port name="clk_i" dir="in"/>
+                <port name="resetn_i" dir="in"/>
+                <port name="led_ctl_o" dir="out"/>
+                <port name="apb_penable_i" dir="in"/>
+                <port name="apb_psel_i" dir="in"/>
+                <port name="apb_pwrite_i" dir="in"/>
+                <port name="apb_paddr_i" range="(5,0)" dir="in"/>
+                <port name="apb_pwdata_i" range="(31,0)" dir="in"/>
+                <port name="apb_prdata_o" range="(31,0)" dir="out"/>
+                <port name="apb_pslverr_o" dir="out"/>
+                <port name="apb_pready_o" dir="out"/>
+            </ports>
+        </module>
+    </modules>
+</lscc:hdlparseresult>

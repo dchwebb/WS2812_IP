@@ -1,0 +1,13 @@
+
+<lsccip:busInterfaces xmlns:lsccip="http://www.latticesemi.com/XMLSchema/Radiant/ip">
+    <lsccip:busInterface>
+        <lsccip:name>APB_Slave</lsccip:name>
+        <lsccip:displayName>APB_Slave</lsccip:displayName>
+        <lsccip:description></lsccip:description>
+        <lsccip:busType vendor="amba.com" library="AMBA3" name="APB" version="r1p0"/>
+        <lsccip:abstractionTypes/>
+        <lsccip:slave>
+            <lsccip:memoryMapRef memoryMapRef="NewInterface1_model_mem_map"/>
+        </lsccip:slave>
+    </lsccip:busInterface>
+</lsccip:busInterfaces>

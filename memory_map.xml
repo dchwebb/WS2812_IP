@@ -1,0 +1,49 @@
+
+<lsccip:memoryMaps xmlns:lsccip="http://www.latticesemi.com/XMLSchema/Radiant/ip">
+    <lsccip:memoryMap>
+        <lsccip:name>WS2812_memory_map</lsccip:name>
+        <lsccip:description>WS2812 memory map</lsccip:description>
+        <lsccip:addressBlock>
+            <lsccip:name>Custom_Registers</lsccip:name>
+            <lsccip:baseAddress>0</lsccip:baseAddress>
+            <lsccip:range>8</lsccip:range>
+            <lsccip:width>32</lsccip:width>
+            <lsccip:register>
+                <lsccip:name>STATUS_REG</lsccip:name>
+                <lsccip:displayName>Status_Register</lsccip:displayName>
+                <lsccip:description>Status Register</lsccip:description>
+                <lsccip:addressOffset>0x0</lsccip:addressOffset>
+                <lsccip:size>32</lsccip:size>
+                <lsccip:volatile>true</lsccip:volatile>
+                <lsccip:access>read-write</lsccip:access>
+                <lsccip:field>
+                    <lsccip:name>status</lsccip:name>
+                    <lsccip:displayName>status</lsccip:displayName>
+                    <lsccip:description>Status of WS2812</lsccip:description>
+                    <lsccip:bitOffset>0</lsccip:bitOffset>
+                    <lsccip:bitWidth>32</lsccip:bitWidth>
+                    <lsccip:volatile>true</lsccip:volatile>
+                    <lsccip:access>read-write</lsccip:access>
+                </lsccip:field>
+            </lsccip:register>
+            <lsccip:register>
+                <lsccip:name>CONTROL_REG</lsccip:name>
+                <lsccip:displayName>Control_Register</lsccip:displayName>
+                <lsccip:description>Control Register</lsccip:description>
+                <lsccip:addressOffset>0x4</lsccip:addressOffset>
+                <lsccip:size>32</lsccip:size>
+                <lsccip:volatile>true</lsccip:volatile>
+                <lsccip:access>read-write</lsccip:access>
+                <lsccip:field>
+                    <lsccip:name>control</lsccip:name>
+                    <lsccip:displayName>control</lsccip:displayName>
+                    <lsccip:description>Control WS2812</lsccip:description>
+                    <lsccip:bitOffset>0</lsccip:bitOffset>
+                    <lsccip:bitWidth>32</lsccip:bitWidth>
+                    <lsccip:volatile>true</lsccip:volatile>
+                    <lsccip:access>read-write</lsccip:access>
+                </lsccip:field>
+            </lsccip:register>
+        </lsccip:addressBlock>
+    </lsccip:memoryMap>
+</lsccip:memoryMaps>

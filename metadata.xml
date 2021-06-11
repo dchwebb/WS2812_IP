@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lsccip:ip xmlns:lsccip="http://www.latticesemi.com/XMLSchema/Radiant/ip" xmlns:xi="http://www.w3.org/2001/XInclude" version="2.0">
+    <lsccip:general>
+        <lsccip:vendor>Mountjoy Modular</lsccip:vendor>
+        <lsccip:library>WS2812_IP</lsccip:library>
+        <lsccip:name>WS2812_IP</lsccip:name>
+        <lsccip:display_name>WS2812_IP</lsccip:display_name>
+        <lsccip:version>1.5</lsccip:version>
+        <lsccip:category>Processors_Controllers_and_Peripherals</lsccip:category>
+        <lsccip:min_radiant_version>3.0</lsccip:min_radiant_version>
+        <lsccip:min_esi_version>2.0</lsccip:min_esi_version>
+        <lsccip:supported_products>
+            <lsccip:supported_family name="MachXO3LF"/>
+            <lsccip:supported_family name="MachXO3D"/>
+            <lsccip:supported_family name="MachXO3L"/>
+        </lsccip:supported_products>
+        <lsccip:supported_platforms>
+            <lsccip:supported_platform name="esi"/>
+        </lsccip:supported_platforms>
+    </lsccip:general>
+    <lsccip:settings>
+        <lsccip:setting id="FAMILY" type="param" value_type="string" conn_mod="WS2812_module" title="Device Architecture" default="LIFCL" value_expr="runtime_info.device_info.architecture(1)" editable="False" hidden="True" group1="General"/>
+        <lsccip:setting id="IF_USER_INTF" type="param" value_type="string" conn_mod="WS2812_module" title="Interface" value_expr="dflt_interf (FAMILY)" options="['APB']" editable="False" group1="General"/>
+    </lsccip:settings>
+    <lsccip:ports>
+        <lsccip:port name="clk_i" dir="in" conn_mod="WS2812_module" conn_port="clk_i" port_type="clock"/>
+        <lsccip:port name="resetn_i" dir="in" conn_mod="WS2812_module" conn_port="resetn_i" port_type="reset"/>
+        <lsccip:port name="led_ctl_o" dir="out" conn_mod="WS2812_module" conn_port="led_ctl_o"/>
+        <lsccip:port name="apb_penable_i" dir="in" conn_mod="WS2812_module" conn_port="apb_penable_i" bus_interface="APB_S0"/>
+        <lsccip:port name="apb_psel_i" dir="in" conn_mod="WS2812_module" conn_port="apb_psel_i" bus_interface="APB_S0"/>
+        <lsccip:port name="apb_pwrite_i" dir="in" conn_mod="WS2812_module" conn_port="apb_pwrite_i" bus_interface="APB_S0"/>
+        <lsccip:port name="apb_paddr_i" dir="in" conn_mod="WS2812_module" range="(5,0)" conn_port="apb_paddr_i" bus_interface="APB_S0"/>
+        <lsccip:port name="apb_pwdata_i" dir="in" conn_mod="WS2812_module" range="(31,0)" conn_port="apb_pwdata_i" bus_interface="APB_S0"/>
+        <lsccip:port name="apb_prdata_o" dir="out" conn_mod="WS2812_module" range="(31,0)" conn_port="apb_prdata_o" bus_interface="APB_S0"/>
+        <lsccip:port name="apb_pslverr_o" dir="out" conn_mod="WS2812_module" conn_port="apb_pslverr_o" bus_interface="APB_S0"/>
+        <lsccip:port name="apb_pready_o" dir="out" conn_mod="WS2812_module" conn_port="apb_pready_o" bus_interface="APB_S0"/>
+    </lsccip:ports>
+    <xi:include parse="xml" href="bus_interface.xml"/>
+    <xi:include parse="xml" href="memory_map.xml"/>
+</lsccip:ip>
