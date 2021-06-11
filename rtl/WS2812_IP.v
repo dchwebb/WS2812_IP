@@ -6,7 +6,8 @@ module WS2812_module #(
 	input wire  clk_i,
 	input wire  resetn_i,
 	
-	output wire  led_ctl_o,
+	output wire led_ctl_o,
+	output wire debug_o,
 	
 	input wire  apb_penable_i,				// apb Enable
 	input wire  apb_psel_i,					// apb Slave select
@@ -39,28 +40,29 @@ always @(posedge clk_i or negedge resetn_i) begin
 	else begin
 		case (SM_APB)
 			sm_idle:
-				if (apb_psel_i) begin
+				if (apb_psel_i && apb_penable_i) begin
 					SM_APB <= sm_access;
 					apb_pready_o <= 1'b1;
+
+					if (apb_pwrite_i) begin
+						apb_paddr_r <= apb_paddr_i;
+						apb_pwdata_r <= apb_pwdata_i;
+					end
+					else begin
+						// address 0 return write address, address 4 return write data
+						if (apb_paddr_i == 6'h0)
+							apb_prdata_o <= 32'hADD00000;
+						else
+							apb_prdata_o <= apb_pwdata_r;
+					end			
+
 				end
 			sm_access:
 				begin
 					apb_pready_o <= 1'b0;
 					SM_APB <= sm_idle;
 					
-					if (apb_penable_i) begin
-						if (apb_pwrite_i) begin
-							apb_paddr_r <= apb_paddr_i;
-							apb_pwdata_r <= apb_pwdata_i;
-						end
-						else begin
-							// address 0 return write address, address 4 return write data
-							if (apb_paddr_i == 6'h0)
-								apb_prdata_o <= 32'hADD00000;
-							else
-								apb_prdata_o <= 32'hADD00004;
-						end			
-					end
+
 				end
 			sm_ready:
 				begin
@@ -72,5 +74,6 @@ always @(posedge clk_i or negedge resetn_i) begin
 end
 
 assign led_ctl_o = apb_psel_i;
+assign debug_o = apb_penable_i;
 	
 endmodule
