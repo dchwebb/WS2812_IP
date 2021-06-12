@@ -119,23 +119,23 @@ localparam sm_led_reset  = 3'b100;			// Wait until ready to send again
 always @(posedge clk_i or negedge resetn_i) begin
 	if (~resetn_i) begin
 		led_ctl_o <= 1'b0;
-		led_counter = 8'b0;
-		led_bit_counter = 8'b0;
+		led_counter <= 8'b0;
+		led_bit_counter <= 8'b0;
 		clock_counter <= CLOCK_DIVIDER;
-		int_o = 1'b0;
-		led_sending = 1'b0;
+		int_o <= 1'b0;
+		led_sending <= 1'b0;
 		SM_Led <= sm_led_idle;
 	end
 	else begin
-		int_o = 1'b0;				// clear interrupt
+		int_o <= 1'b0;				// clear interrupt
 		
 		if (SM_Led == sm_led_idle && colours_updated) begin
 			led_bit_counter <= 8'd23;
-			led_counter = 8'b0;
+			led_counter <= 8'b0;
 			led_ctl_o <= 1'b1;
 			SM_Led <= sm_led_phase2;
 			clock_counter <= CLOCK_DIVIDER;
-			led_sending = 1'b1;
+			led_sending <= 1'b1;
 		end
 		else
 			if (led_sending) begin
@@ -176,8 +176,8 @@ always @(posedge clk_i or negedge resetn_i) begin
 								led_ctl_o <= 1'b0;
 								led_counter <= led_counter + 1'b1;
 								if (led_counter == 250) begin		// 120 = 50uS (minimum gap from datasheet, but in practice needs to be longer)
-									led_sending = 1'b0;
-									int_o = 1'b1;							// Fire interrupt
+									led_sending <= 1'b0;
+									int_o <= 1'b1;							// Fire interrupt
 									SM_Led <= sm_led_idle;
 								end
 							end
