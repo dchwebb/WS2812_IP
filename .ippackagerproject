@@ -10,7 +10,7 @@
             <file path="memory_map.xml"/>
         </filegroup>
         <filegroup filetype="rtl">
-            <file encryption="0" path="rtl/WS2812_IP.v" lib="" type=""/>
+            <file type="" lib="" encryption="0" path="rtl/WS2812_IP.v"/>
         </filegroup>
         <filegroup filetype="doc">
             <file path="doc/introduction.html"/>

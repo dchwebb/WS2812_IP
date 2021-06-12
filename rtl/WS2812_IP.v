@@ -7,6 +7,7 @@ module WS2812_module #(
 	input wire  resetn_i,
 	
 	output wire led_ctl_o,
+	output reg  int_o,						// Interrupt
 	output wire debug_o,
 	
 	input wire  apb_penable_i,				// apb Enable
@@ -38,37 +39,40 @@ always @(posedge clk_i or negedge resetn_i) begin
 		apb_pslverr_o <= 1'b0;
 		status_register <= 32'hADD00000;
 		control_register <= 32'hADD00004;
-		
+		int_o <= 1'b0;
 	end
 	else begin
 		case (SM_APB)
 			sm_idle:
-				if (apb_psel_i && apb_penable_i) begin
-					SM_APB <= sm_access;
-					apb_pready_o <= 1'b1;
+				begin
+					int_o <= 1'b0;
+					if (apb_psel_i && apb_penable_i) begin
+						SM_APB <= sm_access;
+						apb_pready_o <= 1'b1;
 
-					if (apb_pwrite_i) begin
-						if (apb_paddr_i == 6'h0)
-							status_register <= apb_pwdata_i;
-						else
-							control_register <= apb_pwdata_i;						
+						if (apb_pwrite_i) begin
+							int_o <= 1'b1;
+							if (apb_paddr_i == 6'h0)
+								status_register <= apb_pwdata_i;
+							else
+								control_register <= apb_pwdata_i;						
+						end
+						else begin
+							// 0 = status register, 4 = control register
+							if (apb_paddr_i == 6'h0)
+								apb_prdata_o <= status_register;
+							else
+								apb_prdata_o <= control_register;
+						end			
 					end
-					else begin
-						// 0 = status register, 4 = control register
-						if (apb_paddr_i == 6'h0)
-							apb_prdata_o <= status_register;
-						else
-							apb_prdata_o <= control_register;
-					end			
-
 				end
+				
 			sm_access:
 				begin
 					apb_pready_o <= 1'b0;
 					SM_APB <= sm_idle;
-					
-
 				end
+
 			sm_ready:
 				begin
 					SM_APB <= sm_idle;
@@ -78,7 +82,7 @@ always @(posedge clk_i or negedge resetn_i) begin
 	end
 end
 
-assign led_ctl_o = apb_psel_i;
+assign led_ctl_o = control_register[0];
 assign debug_o = apb_penable_i;
 	
 endmodule

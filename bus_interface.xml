@@ -80,4 +80,28 @@
             <lsccip:memoryMapRef memoryMapRef="WS2812_memory_map"/>
         </lsccip:slave>
     </lsccip:busInterface>
+    <lsccip:busInterface>
+        <lsccip:name>INTR</lsccip:name>
+        <lsccip:displayName>INTR</lsccip:displayName>
+        <lsccip:description>Interrupt Request</lsccip:description>
+        <lsccip:busType vendor="spiritconsortium.org" library="busdef.interrupt" name="interrupt" version="1.0"/>
+        <lsccip:abstractionTypes>
+            <lsccip:abstractionType>
+                <lsccip:abstractionRef vendor="spiritconsortium.org" library="busdef.interrupt" name="interrupt" version="1.0"/>
+                <lsccip:portMaps>
+                    <lsccip:portMap>
+                        <lsccip:logicalPort>
+                            <lsccip:name>IRQ</lsccip:name>
+                        </lsccip:logicalPort>
+                        <lsccip:physicalPort>
+                            <lsccip:name>int_o</lsccip:name>
+                        </lsccip:physicalPort>
+                    </lsccip:portMap>
+                </lsccip:portMaps>
+            </lsccip:abstractionType>
+        </lsccip:abstractionTypes>
+        <lsccip:master>
+            <lsccip:addressSpaceRef addressSpaceRef="INTR_Address_Space"/>
+        </lsccip:master>
+    </lsccip:busInterface>
 </lsccip:busInterfaces>

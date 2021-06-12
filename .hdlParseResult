@@ -3,17 +3,18 @@
     <modules>
         <module name="WS2812_module">
             <ports>
-                <port name="clk_i" dir="in"/>
-                <port name="resetn_i" dir="in"/>
-                <port name="led_ctl_o" dir="out"/>
-                <port name="apb_penable_i" dir="in"/>
-                <port name="apb_psel_i" dir="in"/>
-                <port name="apb_pwrite_i" dir="in"/>
-                <port name="apb_paddr_i" range="(5,0)" dir="in"/>
-                <port name="apb_pwdata_i" range="(31,0)" dir="in"/>
-                <port name="apb_prdata_o" range="(31,0)" dir="out"/>
-                <port name="apb_pslverr_o" dir="out"/>
-                <port name="apb_pready_o" dir="out"/>
+                <port dir="in" name="clk_i"/>
+                <port dir="in" name="resetn_i"/>
+                <port dir="out" name="led_ctl_o"/>
+                <port dir="out" name="debug_o"/>
+                <port dir="in" name="apb_penable_i"/>
+                <port dir="in" name="apb_psel_i"/>
+                <port dir="in" name="apb_pwrite_i"/>
+                <port dir="in" range="(5,0)" name="apb_paddr_i"/>
+                <port dir="in" range="(31,0)" name="apb_pwdata_i"/>
+                <port dir="out" range="(31,0)" name="apb_prdata_o"/>
+                <port dir="out" name="apb_pslverr_o"/>
+                <port dir="out" name="apb_pready_o"/>
             </ports>
         </module>
     </modules>
