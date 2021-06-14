@@ -1,6 +1,5 @@
 module WS2812_module #(
 	parameter FAMILY          = "LIFCL",
-	parameter IF_USER_INTF    = "APB",					// Interface type "LMMI" "AHBL" or "APB"
 	parameter LED_COUNT       = 3,
 	parameter CLOCK_FREQUENCY = 38000000
 )
@@ -22,12 +21,11 @@ module WS2812_module #(
 	output reg				apb_pready_o
 );
 
-reg [31:0] status_register;
-reg [31:0] control_register;
-reg [31:0] colour_register;
-
-reg [23:0] led_colour[LED_COUNT - 1:0];
-reg         colours_updated;
+reg [7:0]  led_number;									// Stores the current led number to retrieve colour for
+reg [23:0] led_colour[LED_COUNT - 1:0];			// STores the currently configured colour for each led
+reg         auto_send;
+reg         int_enable;
+reg         trigger_transmit;
 reg         led_sending = 1'b0;
 
 reg [8:0]  clk_counter;
@@ -35,9 +33,15 @@ reg [8:0]  led_counter;
 reg [8:0]  led_bit_counter;
 reg [8:0]  clock_counter;
 
+// Register map
+localparam STATUS_REG    = 6'h0;		// 0x0	STATUS		sending	[0]
+localparam CONTROL_REG   = 6'h4;		// 0x4	CONTROL		auto_send[0]		send		[1]		int_enable [2]
+localparam COLOUR_WR_REG = 6'h8;		// 0x8	COLOUR_WR	colour	[23:0]	led_set	[31:24]
+localparam COLOUR_RD_REG = 6'hC;		// 0x12	COLOUR_RD	colour	[23:0]	led_set	[31:24]
+
+
 // Each pulse must be around .42us (= 2.38MHz); 3 pulses needed for each bit: 3 * .42 = 1.26us
 localparam [8:0] CLOCK_DIVIDER = CLOCK_FREQUENCY / 2380000;
-
 
 // State machine to control APB bus
 reg [1:0] SM_APB;
@@ -48,19 +52,20 @@ always @(posedge clk_i or negedge resetn_i) begin
 	if (~resetn_i) begin
 		SM_APB <= sm_idle;
 		
-		apb_prdata_o <= 32'b0;
-		apb_pready_o <= 1'b0;
-		apb_pslverr_o <= 1'b0;
-		status_register <= 32'h0;
-		control_register <= 32'h0;
-		colours_updated <= 1'b0;
+		apb_prdata_o     <= 32'b0;
+		apb_pready_o     <= 1'b0;
+		apb_pslverr_o    <= 1'b0;
+		auto_send        <= 1'b1;
+		int_enable       <= 1'b0;
+		trigger_transmit <= 1'b0;
+		led_number       <= 8'h0;
 	end
 	else begin
 		case (SM_APB)
 			sm_idle:
 				begin
 					if (led_sending)
-						colours_updated <= 1'b0;
+						trigger_transmit <= 1'b0;
 
 					if (apb_psel_i && apb_penable_i) begin
 						SM_APB <= sm_access;
@@ -69,28 +74,35 @@ always @(posedge clk_i or negedge resetn_i) begin
 						if (apb_pwrite_i) begin
 			
 							case (apb_paddr_i)
-								6'h0:
-									status_register <= apb_pwdata_i;
-								6'h4:
-									control_register <= apb_pwdata_i;
-								6'h8:
+								STATUS_REG:
+									apb_pslverr_o <= 1'b1;														// Status register is read-only; return error
+								CONTROL_REG:
 									begin
-										colours_updated <= 1'b1;												// Trigger to start resending data
+										auto_send <= apb_pwdata_i[0];
+										int_enable <= apb_pwdata_i[2];
+										if (apb_pwdata_i[1])
+											trigger_transmit <= 1'b1;
+									end
+								COLOUR_WR_REG:
+									begin
+										trigger_transmit <= auto_send;										// Trigger to start resending data if auto send is configured
 										led_colour[apb_pwdata_i[31:24]] <= apb_pwdata_i[23:0];		// Top 8 bits are the led to set, lower 24 bits are the colour 
 									end
-									
+								COLOUR_RD_REG:
+									led_number <= apb_pwdata_i[31:24];										// Top 8 bits are the led to read - remaining data is redundant
+
 							endcase
 						end
 						else begin
 							case (apb_paddr_i)
-								6'h0:
-									apb_prdata_o <= status_register;
-								6'h4:
-									apb_prdata_o <= control_register;
-								6'h8:
-									begin
-										apb_prdata_o <= led_colour[status_register];
-									end
+								STATUS_REG:
+									apb_prdata_o  <= {31'b0, led_sending};
+								CONTROL_REG:
+									apb_prdata_o  <= 32'b0 | (int_enable << 2) | (auto_send << 0);
+								COLOUR_WR_REG:
+									apb_pslverr_o <= 1'b1;														// Colour write is write only; return error
+								COLOUR_RD_REG:
+									apb_prdata_o  <= {led_number, led_colour[led_number]};			// Return the colour of the led number specified using the top 8 bits of this register
 							endcase
 						end			
 					end
@@ -98,6 +110,7 @@ always @(posedge clk_i or negedge resetn_i) begin
 				
 			sm_access:
 				begin
+					apb_pslverr_o <= 1'b0;
 					apb_pready_o <= 1'b0;
 					SM_APB <= sm_idle;
 				end
@@ -129,7 +142,7 @@ always @(posedge clk_i or negedge resetn_i) begin
 	else begin
 		int_o <= 1'b0;				// clear interrupt
 		
-		if (SM_Led == sm_led_idle && colours_updated) begin
+		if (SM_Led == sm_led_idle && trigger_transmit) begin
 			led_bit_counter <= 8'd23;
 			led_counter <= 8'b0;
 			led_ctl_o <= 1'b1;
@@ -175,9 +188,9 @@ always @(posedge clk_i or negedge resetn_i) begin
 							begin
 								led_ctl_o <= 1'b0;
 								led_counter <= led_counter + 1'b1;
-								if (led_counter == 250) begin		// 120 = 50uS (minimum gap from datasheet, but in practice needs to be longer)
+								if (led_counter == 250) begin										// 120 = 50uS (minimum gap from datasheet, but in practice needs to be longer)
 									led_sending <= 1'b0;
-									int_o <= 1'b1;							// Fire interrupt
+									int_o <= int_enable;													// Fire interrupt if enabled
 									SM_Led <= sm_led_idle;
 								end
 							end
@@ -193,6 +206,6 @@ always @(posedge clk_i or negedge resetn_i) begin
 	end
 end
 
-assign debug_o = apb_penable_i;
+assign debug_o = auto_send;
 	
 endmodule

@@ -5,7 +5,7 @@
         <lsccip:library>WS2812_IP</lsccip:library>
         <lsccip:name>WS2812_IP</lsccip:name>
         <lsccip:display_name>WS2812_IP</lsccip:display_name>
-        <lsccip:version>1.6</lsccip:version>
+        <lsccip:version>2.1</lsccip:version>
         <lsccip:category>Processors_Controllers_and_Peripherals</lsccip:category>
         <lsccip:min_radiant_version>3.0</lsccip:min_radiant_version>
         <lsccip:min_esi_version>2.0</lsccip:min_esi_version>
@@ -19,8 +19,7 @@
         </lsccip:supported_platforms>
     </lsccip:general>
     <lsccip:settings>
-        <lsccip:setting id="FAMILY" type="param" value_type="string" conn_mod="WS2812_module" title="Device Architecture" default="LIFCL" value_expr="runtime_info.device_info.architecture(1)" editable="False" hidden="True" group1="General"/>
-        <lsccip:setting id="IF_USER_INTF" type="param" value_type="string" conn_mod="WS2812_module" title="Interface" value_expr="dflt_interf (FAMILY)" options="['APB']" editable="False" group1="General"/>
+        <lsccip:setting id="LED_COUNT" type="param" value_type="int" conn_mod="WS2812_module" title="Number of Addressible LEDs" default="3" editable="True" hidden="False" group1="General"/>
     </lsccip:settings>
     <lsccip:ports>
         <lsccip:port name="clk_i" dir="in" conn_mod="WS2812_module" conn_port="clk_i" port_type="clock"/>

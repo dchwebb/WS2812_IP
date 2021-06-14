@@ -9,25 +9,25 @@
             <lsccip:range>8</lsccip:range>
             <lsccip:width>32</lsccip:width>
             <lsccip:register>
-                <lsccip:name>STATUS_REG</lsccip:name>
+                <lsccip:name>STATUS</lsccip:name>
                 <lsccip:displayName>Status_Register</lsccip:displayName>
                 <lsccip:description>Status Register</lsccip:description>
                 <lsccip:addressOffset>0x0</lsccip:addressOffset>
                 <lsccip:size>32</lsccip:size>
                 <lsccip:volatile>true</lsccip:volatile>
-                <lsccip:access>read-write</lsccip:access>
+                <lsccip:access>read-only</lsccip:access>
                 <lsccip:field>
-                    <lsccip:name>status</lsccip:name>
-                    <lsccip:displayName>status</lsccip:displayName>
-                    <lsccip:description>Status of WS2812</lsccip:description>
+                    <lsccip:name>sending</lsccip:name>
+                    <lsccip:displayName>sending</lsccip:displayName>
+                    <lsccip:description>Currently transmitting colour data</lsccip:description>
                     <lsccip:bitOffset>0</lsccip:bitOffset>
-                    <lsccip:bitWidth>32</lsccip:bitWidth>
+                    <lsccip:bitWidth>1</lsccip:bitWidth>
                     <lsccip:volatile>true</lsccip:volatile>
-                    <lsccip:access>read-write</lsccip:access>
+                    <lsccip:access>read-only</lsccip:access>
                 </lsccip:field>
             </lsccip:register>
             <lsccip:register>
-                <lsccip:name>CONTROL_REG</lsccip:name>
+                <lsccip:name>CONTROL</lsccip:name>
                 <lsccip:displayName>Control_Register</lsccip:displayName>
                 <lsccip:description>Control Register</lsccip:description>
                 <lsccip:addressOffset>0x4</lsccip:addressOffset>
@@ -35,11 +35,83 @@
                 <lsccip:volatile>true</lsccip:volatile>
                 <lsccip:access>read-write</lsccip:access>
                 <lsccip:field>
-                    <lsccip:name>control</lsccip:name>
-                    <lsccip:displayName>control</lsccip:displayName>
-                    <lsccip:description>Control WS2812</lsccip:description>
+                    <lsccip:name>auto_send</lsccip:name>
+                    <lsccip:displayName>auto_send</lsccip:displayName>
+                    <lsccip:description>Automatically send after setting colour</lsccip:description>
                     <lsccip:bitOffset>0</lsccip:bitOffset>
-                    <lsccip:bitWidth>32</lsccip:bitWidth>
+                    <lsccip:bitWidth>1</lsccip:bitWidth>
+                    <lsccip:volatile>true</lsccip:volatile>
+                    <lsccip:access>read-write</lsccip:access>
+                </lsccip:field>
+                <lsccip:field>
+                    <lsccip:name>send</lsccip:name>
+                    <lsccip:displayName>send</lsccip:displayName>
+                    <lsccip:description>Trigger immediate transmission</lsccip:description>
+                    <lsccip:bitOffset>1</lsccip:bitOffset>
+                    <lsccip:bitWidth>1</lsccip:bitWidth>
+                    <lsccip:volatile>true</lsccip:volatile>
+                    <lsccip:access>read-write</lsccip:access>
+                </lsccip:field>
+                <lsccip:field>
+                    <lsccip:name>int_enable</lsccip:name>
+                    <lsccip:displayName>int_enable</lsccip:displayName>
+                    <lsccip:description>Enable interrupt on send complete</lsccip:description>
+                    <lsccip:bitOffset>2</lsccip:bitOffset>
+                    <lsccip:bitWidth>1</lsccip:bitWidth>
+                    <lsccip:volatile>true</lsccip:volatile>
+                    <lsccip:access>read-write</lsccip:access>
+                </lsccip:field>
+            </lsccip:register>
+            <lsccip:register>
+                <lsccip:name>COLOUR_WR</lsccip:name>
+                <lsccip:displayName>Colour_Register</lsccip:displayName>
+                <lsccip:description>Set LED colours</lsccip:description>
+                <lsccip:addressOffset>0x8</lsccip:addressOffset>
+                <lsccip:size>32</lsccip:size>
+                <lsccip:volatile>true</lsccip:volatile>
+                <lsccip:access>write-only</lsccip:access>
+                <lsccip:field>
+                    <lsccip:name>colour</lsccip:name>
+                    <lsccip:displayName>colour</lsccip:displayName>
+                    <lsccip:description>GRB colour value of LED</lsccip:description>
+                    <lsccip:bitOffset>0</lsccip:bitOffset>
+                    <lsccip:bitWidth>24</lsccip:bitWidth>
+                    <lsccip:volatile>true</lsccip:volatile>
+                    <lsccip:access>write-only</lsccip:access>
+                </lsccip:field>
+                <lsccip:field>
+                    <lsccip:name>led_number</lsccip:name>
+                    <lsccip:displayName>led_number</lsccip:displayName>
+                    <lsccip:description>Number of Led to set colour</lsccip:description>
+                    <lsccip:bitOffset>24</lsccip:bitOffset>
+                    <lsccip:bitWidth>8</lsccip:bitWidth>
+                    <lsccip:volatile>true</lsccip:volatile>
+                    <lsccip:access>write-only</lsccip:access>
+                </lsccip:field>
+            </lsccip:register>
+            <lsccip:register>
+                <lsccip:name>COLOUR_RD</lsccip:name>
+                <lsccip:displayName>COLOUR_RD</lsccip:displayName>
+                <lsccip:description>Read LED Colours</lsccip:description>
+                <lsccip:addressOffset>0xC</lsccip:addressOffset>
+                <lsccip:size>32</lsccip:size>
+                <lsccip:volatile>true</lsccip:volatile>
+                <lsccip:access>read-write</lsccip:access>
+                <lsccip:field>
+                    <lsccip:name>colour</lsccip:name>
+                    <lsccip:displayName>colour</lsccip:displayName>
+                    <lsccip:description>GRB colour value of LED</lsccip:description>
+                    <lsccip:bitOffset>0</lsccip:bitOffset>
+                    <lsccip:bitWidth>24</lsccip:bitWidth>
+                    <lsccip:volatile>true</lsccip:volatile>
+                    <lsccip:access>read-only</lsccip:access>
+                </lsccip:field>
+                <lsccip:field>
+                    <lsccip:name>led_number</lsccip:name>
+                    <lsccip:displayName>led_number</lsccip:displayName>
+                    <lsccip:description>Number of Led to read colour</lsccip:description>
+                    <lsccip:bitOffset>24</lsccip:bitOffset>
+                    <lsccip:bitWidth>8</lsccip:bitWidth>
                     <lsccip:volatile>true</lsccip:volatile>
                     <lsccip:access>read-write</lsccip:access>
                 </lsccip:field>

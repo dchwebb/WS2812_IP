@@ -10,7 +10,11 @@
             <file path="memory_map.xml"/>
         </filegroup>
         <filegroup filetype="rtl">
-            <file type="" lib="" encryption="0" path="rtl/WS2812_IP.v"/>
+            <file lib="" encryption="0" type="" path="rtl/WS2812_IP.v"/>
+        </filegroup>
+        <filegroup filetype="driver">
+            <file path="driver/WS2812.c"/>
+            <file path="driver/WS2812.h"/>
         </filegroup>
         <filegroup filetype="doc">
             <file path="doc/introduction.html"/>
