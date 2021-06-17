@@ -5,7 +5,7 @@
         <lsccip:library>WS2812_IP</lsccip:library>
         <lsccip:name>WS2812_IP</lsccip:name>
         <lsccip:display_name>WS2812_IP</lsccip:display_name>
-        <lsccip:version>2.1</lsccip:version>
+        <lsccip:version>2.2</lsccip:version>
         <lsccip:category>Processors_Controllers_and_Peripherals</lsccip:category>
         <lsccip:min_radiant_version>3.0</lsccip:min_radiant_version>
         <lsccip:min_esi_version>2.0</lsccip:min_esi_version>
